@@ -66,11 +66,13 @@ namespace WebApi.Controllers {
 
 
 
-        [HttpPut]
-        public IActionResult UpdateBook ([FromBody] UpdateBookModel book) {
+        [HttpPut("{id}")]
+        public IActionResult UpdateBook (int id,[FromBody] UpdateBookModel book) {
 
             UpdateBookCommand update = new(context) {
-                UpdateBookModel = book
+                UpdateBookModel = book,
+                BookId=id
+                
             };
 
             try {

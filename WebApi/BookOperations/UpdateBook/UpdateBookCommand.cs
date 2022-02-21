@@ -11,14 +11,16 @@ namespace WebApi.BookOperations.UpdateBook {
         private readonly BookStoreDbContext dbcontext;
         public UpdateBookModel UpdateBookModel { get; set; }
 
+        public int BookId { get; set; }
+
         public UpdateBookCommand (BookStoreDbContext dbcontext) {
             this.dbcontext = dbcontext;
         }
 
         public void Handle() {
-            Book getBook = dbcontext.Books.Where(x => x.Id == UpdateBookModel.Id).SingleOrDefault();
-            if (UpdateBookModel == null) {
-                throw new InvalidOperationException("Güncellenmek istenen kitap bulunamadı.");
+            Book getBook = dbcontext.Books.Where(x => x.Id == BookId).SingleOrDefault();
+            if (getBook == null) {
+                throw new InvalidOperationException("Güncellenmek istenen kitap bulunamadı.");  
             }
             int stringGenre = (int)Enum.Parse(typeof(GenreEnum), UpdateBookModel.Genre);
 
@@ -34,7 +36,7 @@ namespace WebApi.BookOperations.UpdateBook {
     }
     public class UpdateBookModel {
         
-        public int Id { get; set; }
+        
         public string Title { get; set; }
         public int PageCount { get; set; }
         public DateTime PublishDate { get; set; }
