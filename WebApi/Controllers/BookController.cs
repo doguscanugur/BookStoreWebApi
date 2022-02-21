@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.BookOperations.CreateBook;
+using WebApi.BookOperations.DeleteBook;
 using WebApi.BookOperations.GetBooks;
 using WebApi.BookOperations.UpdateBook;
 using WebApi.DBOperations;
@@ -34,7 +35,7 @@ namespace WebApi.Controllers {
                 BookId = id
             };
             try {
-                 result = getBookById.Handle();
+                result = getBookById.Handle();
             }
             catch (Exception e) {
 
@@ -67,12 +68,12 @@ namespace WebApi.Controllers {
 
 
         [HttpPut("{id}")]
-        public IActionResult UpdateBook (int id,[FromBody] UpdateBookModel book) {
+        public IActionResult UpdateBook (int id, [FromBody] UpdateBookModel book) {
 
             UpdateBookCommand update = new(context) {
                 UpdateBookModel = book,
-                BookId=id
-                
+                BookId = id
+
             };
 
             try {
@@ -89,21 +90,26 @@ namespace WebApi.Controllers {
         [HttpDelete("{id}")]
         public IActionResult DeleteBook (int id) {
 
-            var book = context.Books.SingleOrDefault(x => x.Id == id);
-            if (book == null) {
-                return BadRequest();
+            DeleteBookCommand deleteBookCommand = new(context) {
+                BookId = id
+            };
+            try {
+                deleteBookCommand.Handle();
+            } 
+            catch (Exception e) {
+
+                return BadRequest(e.Message);
             }
-
-            context.Books.Remove(book);
-            context.SaveChanges();
             return Ok();
-
         }
-
-
-
-
-
-
     }
+
+
 }
+
+
+
+
+
+
+
