@@ -23,6 +23,7 @@ namespace WebApi.BookOperations.UpdateBook {
                 throw new InvalidOperationException("Güncellenmek istenen kitap bulunamadı.");  
             }
             int stringGenre = (int)Enum.Parse(typeof(GenreEnum), UpdateBookModel.Genre);
+            
 
             getBook.Title = UpdateBookModel.Title != default ? UpdateBookModel.Title : getBook.Title;
             getBook.GenreId = UpdateBookModel.Genre != default ? stringGenre : getBook.GenreId;

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,9 +19,11 @@ namespace WebApi.Controllers {
     public class BookController : ControllerBase {
 
         private readonly BookStoreDbContext context;
+        private readonly IMapper mapper;
 
-        public BookController (BookStoreDbContext context) {
+        public BookController (BookStoreDbContext context,IMapper mapper) {
             this.context = context;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -31,10 +36,12 @@ namespace WebApi.Controllers {
         public IActionResult GetById (int id) {
 
             BookByIdViewModel result;
-            GetBookById getBookById = new(context) {
+            GetBookById getBookById = new(context,mapper) {
                 BookId = id
             };
             try {
+                GetBookByIdValidator valitator = new();
+                valitator.ValidateAndThrow(getBookById);
                 result = getBookById.Handle();
             }
             catch (Exception e) {
@@ -50,10 +57,13 @@ namespace WebApi.Controllers {
         [HttpPost]
 
         public IActionResult AddBook ([FromBody] CreateBookModel createBookModel) {
-            CreateBookCommand createBookCommand = new(context) {
+            CreateBookCommand createBookCommand = new(context,mapper) {
                 CreateBookModel = createBookModel
             };
             try {
+                CreateBookCommandValidator valitator = new();
+                valitator.ValidateAndThrow(createBookCommand);
+
                 createBookCommand.Handle();
             }
             catch (Exception e) {
@@ -77,6 +87,8 @@ namespace WebApi.Controllers {
             };
 
             try {
+                UpdateBookCommandValidator valitator = new();
+                valitator.ValidateAndThrow(update);
                 update.Handle();
             }
             catch (Exception e) {
@@ -94,6 +106,9 @@ namespace WebApi.Controllers {
                 BookId = id
             };
             try {
+                DeleteBookCommandValidator valitator = new();
+                valitator.ValidateAndThrow(deleteBookCommand);
+
                 deleteBookCommand.Handle();
             } 
             catch (Exception e) {
