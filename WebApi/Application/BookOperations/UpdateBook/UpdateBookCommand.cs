@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Common;
 using WebApi.DBOperations;
+using WebApi.Entities;
 
-namespace WebApi.BookOperations.UpdateBook {
+namespace WebApi.Application.BookOperations.UpdateBook {
     public class UpdateBookCommand {
 
         private readonly BookStoreDbContext dbcontext;
@@ -18,15 +20,15 @@ namespace WebApi.BookOperations.UpdateBook {
         }
 
         public void Handle() {
-            Book getBook = dbcontext.Books.Where(x => x.Id == BookId).SingleOrDefault();
+            Book getBook = dbcontext.Books.Include(x=>x.Genre).Where(x => x.Id == BookId).SingleOrDefault();
             if (getBook == null) {
                 throw new InvalidOperationException("Güncellenmek istenen kitap bulunamadı.");  
             }
-            int stringGenre = (int)Enum.Parse(typeof(GenreEnum), UpdateBookModel.Genre);
+            //int stringGenre = (int)Enum.Parse(typeof(GenreEnum), UpdateBookModel.Genre);
             
 
             getBook.Title = UpdateBookModel.Title != default ? UpdateBookModel.Title : getBook.Title;
-            getBook.GenreId = UpdateBookModel.Genre != default ? stringGenre : getBook.GenreId;
+            getBook.GenreId = UpdateBookModel.Genre != default ? UpdateBookModel.Genre : getBook.GenreId;
             getBook.PageCount = UpdateBookModel.PageCount != default ? UpdateBookModel.PageCount : getBook.PageCount;
             getBook.PublishDate = UpdateBookModel.PublishDate != default ? UpdateBookModel.PublishDate : getBook.PublishDate;
             
@@ -41,6 +43,6 @@ namespace WebApi.BookOperations.UpdateBook {
         public string Title { get; set; }
         public int PageCount { get; set; }
         public DateTime PublishDate { get; set; }
-        public string Genre { get; set; }
+        public int Genre { get; set; }
     }
 }

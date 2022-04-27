@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApi.BookOperations.CreateBook {
+namespace WebApi.Application.BookOperations.CreateBook {
     public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand> {
         public CreateBookCommandValidator () {
             RuleFor(command => command.CreateBookModel.GenreId).GreaterThan(0);

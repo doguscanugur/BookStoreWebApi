@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.DBOperations;
 
-namespace WebApi.BookOperations.DeleteBook {
+namespace WebApi.Application.BookOperations.DeleteBook {
     public class DeleteBookCommand {
 
         private readonly BookStoreDbContext dbcontext;

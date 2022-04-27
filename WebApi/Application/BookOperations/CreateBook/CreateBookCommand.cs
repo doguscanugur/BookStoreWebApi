@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.DBOperations;
+using WebApi.Entities;
 
-namespace WebApi.BookOperations.CreateBook {
+namespace WebApi.Application.BookOperations.CreateBook {
     public class CreateBookCommand {
 
         private readonly BookStoreDbContext context;

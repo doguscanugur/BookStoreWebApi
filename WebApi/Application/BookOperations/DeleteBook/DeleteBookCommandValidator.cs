@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApi.BookOperations.DeleteBook {
+namespace WebApi.Application.BookOperations.DeleteBook {
     public class DeleteBookCommandValidator : AbstractValidator<DeleteBookCommand> {
         public DeleteBookCommandValidator () {
             RuleFor(command => command.BookId).GreaterThan(0).NotEmpty();

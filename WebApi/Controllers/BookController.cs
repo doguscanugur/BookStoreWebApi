@@ -7,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.BookOperations.CreateBook;
-using WebApi.BookOperations.DeleteBook;
-using WebApi.BookOperations.GetBooks;
-using WebApi.BookOperations.UpdateBook;
+using WebApi.Application.BookOperations.CreateBook;
+using WebApi.Application.BookOperations.DeleteBook;
+using WebApi.Application.BookOperations.GetBooks;
+using WebApi.Application.BookOperations.UpdateBook;
 using WebApi.DBOperations;
 
 namespace WebApi.Controllers {
@@ -21,33 +21,30 @@ namespace WebApi.Controllers {
         private readonly BookStoreDbContext context;
         private readonly IMapper mapper;
 
-        public BookController (BookStoreDbContext context,IMapper mapper) {
+        public BookController (BookStoreDbContext context, IMapper mapper) {
             this.context = context;
             this.mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetBooks () {
-            GetBooksQuery query = new(context);
+            GetBooksQuery query = new(context,mapper);
             var result = query.Handle();
             return Ok(result);
         }
+
+
         [HttpGet("{id}")]
         public IActionResult GetById (int id) {
 
             BookByIdViewModel result;
-            GetBookById getBookById = new(context,mapper) {
+            GetBookById getBookById = new(context, mapper) {
                 BookId = id
             };
-            try {
-                GetBookByIdValidator valitator = new();
-                valitator.ValidateAndThrow(getBookById);
-                result = getBookById.Handle();
-            }
-            catch (Exception e) {
 
-                return BadRequest(e.Message);
-            }
+            GetBookByIdValidator valitator = new();
+            valitator.ValidateAndThrow(getBookById);
+            result = getBookById.Handle();
 
 
             return Ok(result);
@@ -55,21 +52,20 @@ namespace WebApi.Controllers {
 
 
         [HttpPost]
-
         public IActionResult AddBook ([FromBody] CreateBookModel createBookModel) {
-            CreateBookCommand createBookCommand = new(context,mapper) {
+            CreateBookCommand createBookCommand = new(context, mapper) {
                 CreateBookModel = createBookModel
             };
-            try {
-                CreateBookCommandValidator valitator = new();
-                valitator.ValidateAndThrow(createBookCommand);
 
-                createBookCommand.Handle();
-            }
-            catch (Exception e) {
+            CreateBookCommandValidator valitator = new();
+            valitator.ValidateAndThrow(createBookCommand);
 
-                return BadRequest(e.Message);
-            }
+            createBookCommand.Handle();
+            //}
+            //catch (Exception e) {
+
+            //    return BadRequest(e.Message);
+            //}
             return Ok();
 
 
@@ -86,14 +82,12 @@ namespace WebApi.Controllers {
 
             };
 
-            try {
-                UpdateBookCommandValidator valitator = new();
-                valitator.ValidateAndThrow(update);
-                update.Handle();
-            }
-            catch (Exception e) {
-                return BadRequest(e.Message);
-            }
+
+            UpdateBookCommandValidator valitator = new();
+            valitator.ValidateAndThrow(update);
+            update.Handle();
+
+
             return Ok();
 
 
@@ -105,16 +99,12 @@ namespace WebApi.Controllers {
             DeleteBookCommand deleteBookCommand = new(context) {
                 BookId = id
             };
-            try {
-                DeleteBookCommandValidator valitator = new();
-                valitator.ValidateAndThrow(deleteBookCommand);
 
-                deleteBookCommand.Handle();
-            } 
-            catch (Exception e) {
+            DeleteBookCommandValidator valitator = new();
+            valitator.ValidateAndThrow(deleteBookCommand);
 
-                return BadRequest(e.Message);
-            }
+            deleteBookCommand.Handle();
+
             return Ok();
         }
     }
